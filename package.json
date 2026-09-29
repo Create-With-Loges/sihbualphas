@@ -1,0 +1,16 @@
+{
+  "name": "skillpulse-ai",
+  "version": "1.0.0",
+  "description": "Labour-Market Intelligence and Automated Curriculum-Alignment Platform (MERN + ML)",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run ml\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "ml": "powershell -Command \"cd ml_service; python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload\"",
+    "seed": "cd server && node src/seed.js",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

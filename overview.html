@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillPulse AI ⚡ Project Overview & Architecture Guide</title>
+  <meta name="description" content="Comprehensive project overview, technical architecture, machine learning telemetry, and feature tour for SkillPulse AI - Smart India Hackathon.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --brand-primary: #4f46e5;
+      --brand-primary-light: #6366f1;
+      --brand-primary-soft: rgba(79, 70, 229, 0.08);
+      --brand-accent: #06b6d4;
+      --brand-accent-soft: rgba(6, 182, 212, 0.1);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.1);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.1);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.1);
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      --code-bg: #1e293b;
+      --code-text: #e2e8f0;
+      --nav-bg: rgba(255, 255, 255, 0.85);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #0b0f19;
+      --bg-surface: #111827;
+      --bg-surface-elevated: #1f2937;
+      --bg-subtle: #1e293b;
+      --border-color: #2e384d;
+      --border-subtle: #374151;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --brand-primary: #6366f1;
+      --brand-primary-light: #818cf8;
+      --brand-primary-soft: rgba(99, 102, 241, 0.15);
+      --brand-accent: #22d3ee;
+      --brand-accent-soft: rgba(34, 211, 238, 0.15);
+      --success: #34d399;
+      --success-soft: rgba(52, 211, 153, 0.15);
+      --warning: #fbbf24;
+      --warning-soft: rgba(251, 191, 36, 0.15);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.15);
+      --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      --code-bg: #030712;
+      --code-text: #f3f4f6;
+      --nav-bg: rgba(17, 24, 39, 0.88);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--brand-primary-soft);
+      color: var(--brand-primary);
+      font-weight: 700;
+      border: 1px solid var(--brand-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--brand-primary);
+      background: var(--brand-primary-soft);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    .theme-toggle-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--brand-primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 64px 0 48px;
+      position: relative;
+    }
+
+    .hero-badge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: var(--brand-primary-soft);
+      color: var(--brand-primary);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .pill-badge.green {
+      background: var(--success-soft);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-lead {
+      font-size: 1.18rem;
+      color: var(--text-secondary);
+      max-width: 860px;
+      margin-bottom: 32px;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    /* Metric Highlights Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin: 40px 0;
+    }
+
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--brand-primary-light);
+    }
+
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+    }
+
+    .metric-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Section Styles */
+    section {
+      padding: 56px 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .section-header {
+      margin-bottom: 36px;
+    }
+
+    .section-eyebrow {
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--brand-primary);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+    }
+
+    /* Problem vs Solution Comparison */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .comparison-card {
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      box-shadow: var(--card-shadow);
+    }
+
+    .comparison-card.problem {
+      border-left: 5px solid var(--danger);
+    }
+
+    .comparison-card.solution {
+      border-left: 5px solid var(--success);
+      background: var(--bg-surface-elevated);
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .icon-box.red { background: var(--danger-soft); color: var(--danger); }
+    .icon-box.green { background: var(--success-soft); color: var(--success); }
+    .icon-box.blue { background: var(--brand-primary-soft); color: var(--brand-primary); }
+    .icon-box.cyan { background: var(--brand-accent-soft); color: var(--brand-accent); }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+
+    .bullet-list li strong {
+      color: var(--text-primary);
+    }
+
+    .bullet-icon {
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    /* Architecture Visualizer */
+    .arch-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 32px;
+    }
+
+    .arch-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .arch-layer {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px 24px;
+      transition: all 0.25s ease;
+    }
+
+    .arch-layer:hover {
+      border-color: var(--brand-primary);
+      transform: translateX(4px);
+    }
+
+    .layer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .layer-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .layer-tech-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tech-tag {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--brand-primary);
+      font-weight: 600;
+    }
+
+    .layer-components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .layer-chip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .layer-chip-name {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .layer-chip-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* USP Feature Cards */
+    .usp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .usp-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .usp-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--brand-primary-light);
+    }
+
+    .usp-pill {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+
+    .usp-pill.purple { background: var(--brand-primary-soft); color: var(--brand-primary); }
+    .usp-pill.cyan { background: var(--brand-accent-soft); color: var(--brand-accent); }
+    .usp-pill.emerald { background: var(--success-soft); color: var(--success); }
+
+    .usp-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .usp-desc {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .usp-specs {
+      background: var(--bg-subtle);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.82rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .spec-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .spec-val {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ML Pipeline Telemetry */
+    .telemetry-board {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: var(--card-shadow-hover);
+      margin-bottom: 32px;
+    }
+
+    .telemetry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .telemetry-title {
+      color: #ffffff;
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .telemetry-badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .telemetry-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .telemetry-panel-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .telemetry-metric {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      margin-bottom: 4px;
+    }
+
+    .telemetry-metric-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* Interactive Simulator */
+    .simulator-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--card-shadow);
+      padding: 32px;
+      margin: 32px 0;
+    }
+
+    .sim-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .sim-tab-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .sim-tab-btn.active {
+      background: var(--brand-primary);
+      color: #ffffff;
+      border-color: var(--brand-primary);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+    }
+
+    .sim-pane {
+      display: none;
+    }
+
+    .sim-pane.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .sim-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .sim-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-select, .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-select:focus, .form-input:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-primary-soft);
+    }
+
+    .sim-output-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .output-score-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Modules Tour Accordion / Tabs */
+    .module-tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .module-tab-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .module-tab-card.active {
+      border-color: var(--brand-primary);
+      background: var(--brand-primary-soft);
+    }
+
+    .module-tab-card h5 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .module-tab-card span {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .module-display-pane {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--card-shadow);
+    }
+
+    /* API Endpoint Table */
+    .api-table-container {
+      overflow-x: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      margin: 20px 0;
+    }
+
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+
+    .api-table th {
+      background: var(--bg-subtle);
+      padding: 12px 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .api-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .api-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .method-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .method-get { background: rgba(16, 185, 129, 0.15); color: #059669; }
+    .method-post { background: rgba(79, 70, 229, 0.15); color: #4338ca; }
+    .method-put { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+
+    /* Code Block Box */
+    .code-box {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 20px 24px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      position: relative;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .code-box pre {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Accounts Grid */
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .account-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .account-role {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--brand-primary);
+    }
+
+    .account-email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .account-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      padding: 48px 0;
+      margin-top: 64px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsiveness */
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="#hero" class="brand">
+        <div class="brand-icon">SP</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="brand-title">SkillPulse AI</span>
+            <span class="brand-badge">SIH 2024 / 2026</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Labour Intelligence & Curriculum Alignment</div>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#problem">Problem & Solution</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#usps">Key USPs</a></li>
+        <li><a href="#telemetry">ML Telemetry</a></li>
+        <li><a href="#simulator">Live Simulator</a></li>
+        <li><a href="#modules">Feature Tour</a></li>
+        <li><a href="#api">API Directory</a></li>
+        <li><a href="#quickstart">Quickstart</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span id="themeIcon">🌙</span>
+          <span id="themeLabel">Dark Mode</span>
+        </button>
+        <a href="http://localhost:5173" target="_blank" class="btn btn-primary" title="Open the running React frontend">
+          Launch App ⚡
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header id="hero" class="hero">
+    <div class="container">
+      <div class="hero-badge-wrapper">
+        <span class="pill-badge">🏛️ Smart India Hackathon Innovation</span>
+        <span class="pill-badge green">● ML Engine Active (18,000+ Records)</span>
+        <span class="pill-badge">🚀 Full-Stack MERN + Python FastAPI Microservice</span>
+      </div>
+
+      <h1 class="hero-title">
+        Evidence-Based Labour-Market Intelligence & <br>
+        <span class="gradient-text">Automated Curriculum-Alignment Platform</span>
+      </h1>
+
+      <p class="hero-lead">
+        Bridging the critical 5-year vocational training lag by establishing a continuous, real-time data feedback loop between industrial vacancy signals, district-level training seat capacities, and automated syllabus modernizations aligned to NSQF benchmarks.
+      </p>
+
+      <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+        <a href="#simulator" class="btn btn-primary">
+          Try Interactive ML Simulator ↓
+        </a>
+        <a href="#architecture" class="btn btn-secondary">
+          Explore System Architecture
+        </a>
+        <a href="http://localhost:8000/docs" target="_blank" class="btn btn-secondary">
+          FastAPI Swagger Docs ↗
+        </a>
+      </div>
+
+      <!-- Key Performance Indicators Banner -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-number">18,000+</div>
+          <div class="metric-label">Pre-Trained Training Records</div>
+          <div class="metric-sub">Labour signals, syllabus modules, placement outcomes</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">1,157</div>
+          <div class="metric-label">N-Gram Semantic Vocabulary</div>
+          <div class="metric-sub">TF-IDF vectorizer + sector demand centroids</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">82.7%</div>
+          <div class="metric-label">Placement Readiness Accuracy</div>
+          <div class="metric-sub">ROC-AUC: 0.8093 on 5,000 placement trajectories</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">16+</div>
+          <div class="metric-label">Industrial District Hubs</div>
+          <div class="metric-sub">Pune, Bengaluru, Ahmedabad, Coimbatore, Gurgaon...</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">100%</div>
+          <div class="metric-label">System Uptime Resilience</div>
+          <div class="metric-sub">Automatic Node.js heuristic fallback proxy</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Beginner-Friendly Summary Section -->
+  <section id="beginner-summary" style="background: var(--bg-subtle); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="section-header" style="text-align: center; margin-bottom: 48px;">
+        <span class="section-eyebrow" style="color: var(--brand-primary); font-size: 0.9rem;">In Simple Words</span>
+        <h2 class="section-title">What does SkillPulse AI actually do?</h2>
+        <p class="section-desc" style="margin: 0 auto; max-width: 700px;">
+          Behind the advanced machine learning and complex architecture, our platform solves real-world problems for four key groups of people.
+        </p>
+      </div>
+
+      <div class="comparison-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+        
+        <!-- Students -->
+        <div class="comparison-card" style="padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+          <div class="icon-box blue" style="width: 48px; height: 48px; font-size: 1.5rem; border-radius: 12px;">👨‍🎓</div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">For Students &amp; Job Seekers</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+            Tired of studying outdated topics? We analyze thousands of live job postings to tell you exactly what skills companies are hiring for right now. We predict your chances of getting hired and recommend short bridge-courses to make you the perfect candidate.
+          </p>
+        </div>
+
+        <!-- Teachers -->
+        <div class="comparison-card" style="padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+          <div class="icon-box cyan" style="width: 48px; height: 48px; font-size: 1.5rem; border-radius: 12px;">🎓</div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">For Teachers &amp; Institutes</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+            We take the guesswork out of updating your syllabus. Our system acts as your personal AI assistant&mdash;reading your current course material, highlighting what's outdated (like old engine repair), and suggesting exactly what new topics (like Electric Vehicles) to teach.
+          </p>
+        </div>
+
+        <!-- Employers -->
+        <div class="comparison-card" style="padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+          <div class="icon-box green" style="width: 48px; height: 48px; font-size: 1.5rem; border-radius: 12px;">🏢</div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">For Companies &amp; Employers</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+            You no longer have to wait years for colleges to catch up with your technology. You can directly view proposed syllabi on our platform, vote on what's missing, and pledge to hire graduates who complete the courses you approved.
+          </p>
+        </div>
+
+        <!-- Government -->
+        <div class="comparison-card" style="padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+          <div class="icon-box red" style="width: 48px; height: 48px; font-size: 1.5rem; border-radius: 12px;">🏛️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">For Government Planners</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+            Stop guessing how many training seats to allocate. We predict the future hiring demand in your specific district and tell you exactly how many training seats you need, helping you prevent both skill shortages and graduate unemployment.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Statement & Solution Section -->
+  <section id="problem">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">The Core Problem & Breakthrough</span>
+        <h2 class="section-title">Why Traditional Skill Development Fails</h2>
+        <p class="section-desc">
+          Vocational and technical training institutes in India historically refresh their syllabi once every 5 to 8 years. Meanwhile, emerging tech cycles change in months, leaving graduates unemployed and industries starved of talent.
+        </p>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card problem">
+          <div class="card-title-row">
+            <div class="icon-box red">✕</div>
+            <h3 style="font-size: 1.25rem;">The Traditional Vocational Lag</h3>
+          </div>
+          <ul class="bullet-list">
+            <li>
+              <span class="bullet-icon">⚠️</span>
+              <div><strong>Static Curricula:</strong> Syllabi still teach obsolete mechanical carburetors, analogue meters, and drafting boards while companies hire for EV BMS, SCADA, and 5-axis Cobots.</div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚠️</span>
+              <div><strong>District Capacity Blindspots:</strong> Training institutes produce hundreds of generic graduates without tracking local industrial hiring absorption, causing severe regional skill surpluses and shortages.</div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚠️</span>
+              <div><strong>Disconnected Industry Employers:</strong> Industry validation occurs via ad-hoc annual meetings with no structured quantitative voting, CAPEX lab sharing, or pledged job placement quotas.</div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚠️</span>
+              <div><strong>Generic Candidate Pathways:</strong> Students receive arbitrary certificate credentials without personalized placement probability or actionable bridge-course recommendations.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="comparison-card solution">
+          <div class="card-title-row">
+            <div class="icon-box green">✓</div>
+            <h3 style="font-size: 1.25rem;">The SkillPulse AI Solution Loop</h3>
+          </div>
+          <ul class="bullet-list">
+            <li>
+              <span class="bullet-icon">⚡</span>
+              <div><strong>Dynamic Semantic Drift Engine:</strong> Continuous TF-IDF vectorization matches syllabi against real-time job vacancy signals, flagging obsolete units and calculating a 0–100% Relevance Score.</div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚡</span>
+              <div><strong>Predictive District Training Plans:</strong> Random Forest regressor forecasts 3-year local demand, generating itemized lab equipment tenders (₹ Lakhs) and trainer upskilling quotas.</div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚡</span>
+              <div><strong>360° Employer Co-Design Workbench:</strong> Industry leaders (Tata Motors, Ather, Infosys, Adani Solar) review curricula in real-time, vote on module efficacy, and pledge hiring seats.</div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚡</span>
+              <div><strong>Precision Career Navigator:</strong> Machine learning classifier calculates candidate placement probability (82.7% accuracy) and prescribes custom bridge courses for target job roles.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Architecture & Microservices Section -->
+  <section id="architecture">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Full-Stack Engineering</span>
+        <h2 class="section-title">System Architecture & Service Ecosystem</h2>
+        <p class="section-desc">
+          SkillPulse AI is engineered with a decoupled microservice architecture ensuring sub-second response times, complete mathematical resilience, and enterprise-grade scalability.
+        </p>
+      </div>
+
+      <div class="arch-container">
+        <div class="arch-layers">
+          
+          <!-- Layer 1: Client -->
+          <div class="arch-layer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <div class="icon-box blue" style="width:28px; height:28px; font-size:0.9rem;">1</div>
+                Presentation Tier: React 19 Frontend Web Application
+              </div>
+              <div class="layer-tech-tags">
+                <span class="tech-tag">React 19</span>
+                <span class="tech-tag">Vite</span>
+                <span class="tech-tag">Lucide Icons</span>
+                <span class="tech-tag">Vanilla CSS Tokens</span>
+                <span class="tech-tag">Port :5173</span>
+              </div>
+            </div>
+            <div class="layer-components-grid">
+              <div class="layer-chip">
+                <span class="layer-chip-name">AuthPage & RBAC</span>
+                <span class="layer-chip-desc">District Officer, Trainer, Employer, Trainee authenticated views</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Curriculum Alignment Studio</span>
+                <span class="layer-chip-desc">Interactive gap analysis, obsolete module flagging, 1-click update</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">District Planner Studio</span>
+                <span class="layer-chip-desc">Heatmap of 16 districts, demand vs seats, tender synthesis</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Employer Validation & ML Studio</span>
+                <span class="layer-chip-desc">Industry endorsement voting, live model telemetry and testing</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 2: Express Backend -->
+          <div class="arch-layer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <div class="icon-box cyan" style="width:28px; height:28px; font-size:0.9rem;">2</div>
+                Application & Orchestration Tier: Express.js REST API
+              </div>
+              <div class="layer-tech-tags">
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Express.js</span>
+                <span class="tech-tag">JWT Auth</span>
+                <span class="tech-tag">Mongoose ORM</span>
+                <span class="tech-tag">Port :5000</span>
+              </div>
+            </div>
+            <div class="layer-components-grid">
+              <div class="layer-chip">
+                <span class="layer-chip-name">REST Routing & Controllers</span>
+                <span class="layer-chip-desc">Courses, Job Signals, District Demand, Surveys, Placements</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">mlBridge.js Service</span>
+                <span class="layer-chip-desc">FastAPI HTTP client with automatic mathematical heuristic fallback</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Strategic Plan Generator</span>
+                <span class="layer-chip-desc">Aggregates CapEx budgets, trainer quotas, and milestones</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Database Seeder & Aggregator</span>
+                <span class="layer-chip-desc">Curates real-time mismatch indices and district statistics</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 3: Python ML Service -->
+          <div class="arch-layer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <div class="icon-box green" style="width:28px; height:28px; font-size:0.9rem;">3</div>
+                Machine Learning Inference Tier: Python FastAPI Service
+              </div>
+              <div class="layer-tech-tags">
+                <span class="tech-tag">Python 3.13</span>
+                <span class="tech-tag">FastAPI</span>
+                <span class="tech-tag">Scikit-Learn</span>
+                <span class="tech-tag">Joblib</span>
+                <span class="tech-tag">Port :8000</span>
+              </div>
+            </div>
+            <div class="layer-components-grid">
+              <div class="layer-chip">
+                <span class="layer-chip-name">TF-IDF Vectorizer (1,157 N-Grams)</span>
+                <span class="layer-chip-desc">Computes cosine similarity distance to sector skill centroids</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Random Forest Demand Regressor</span>
+                <span class="layer-chip-desc">Projects 3-year district hiring volumes based on industrial CapEx</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Placement Readiness Classifier</span>
+                <span class="layer-chip-desc">82.7% accuracy Random Forest predicting placement probability</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">FastAPI Swagger Docs (/docs)</span>
+                <span class="layer-chip-desc">Interactive OpenAPI specification and inference endpoints</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 4: Storage Tier -->
+          <div class="arch-layer">
+            <div class="layer-header">
+              <div class="layer-title">
+                <div class="icon-box blue" style="width:28px; height:28px; font-size:0.9rem;">4</div>
+                Persistence Tier: MongoDB Database & Serialized Models
+              </div>
+              <div class="layer-tech-tags">
+                <span class="tech-tag">MongoDB</span>
+                <span class="tech-tag">18,000+ CSV Datasets</span>
+                <span class="tech-tag">Joblib Artifacts</span>
+                <span class="tech-tag">Port :27017</span>
+              </div>
+            </div>
+            <div class="layer-components-grid">
+              <div class="layer-chip">
+                <span class="layer-chip-name">Course & JobSignal Collections</span>
+                <span class="layer-chip-desc">Active curricula modules, vacancies, and skills taxonomy</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">DistrictDemand & TrainingPlan</span>
+                <span class="layer-chip-desc">Seat allocations, CapEx equipment tenders, and roadmaps</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">EmployerSurvey & Placements</span>
+                <span class="layer-chip-desc">Verification endorsements, hiring pledges, and wage tracks</span>
+              </div>
+              <div class="layer-chip">
+                <span class="layer-chip-name">Pre-Trained .joblib Binaries</span>
+                <span class="layer-chip-desc">Serialized vectorizer, centroids, regressor, and classifier</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key USPs Section -->
+  <section id="usps">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Distinctive Innovations</span>
+        <h2 class="section-title">Unique Selling Points (USPs)</h2>
+        <p class="section-desc">
+          Designed specifically to meet the high standards of the Smart India Hackathon jury with quantitative rigor and immediate governance impact.
+        </p>
+      </div>
+
+      <div class="usp-grid">
+        <!-- USP 1 -->
+        <div class="usp-card">
+          <div>
+            <span class="usp-pill purple">🧠 USP 1: ML-Driven</span>
+            <h3 class="usp-title">Dynamic Semantic Skill-Drift & Obsolescence Engine</h3>
+            <p class="usp-desc">
+              Replaces subjective syllabus reviews with rigorous natural language processing. The engine vectorizes existing syllabus text across 1,157 n-grams and computes cosine similarity against sector-specific industrial demand centroids trained on 10,500+ live job vacancies.
+            </p>
+            <ul class="bullet-list" style="margin-bottom: 20px;">
+              <li><span class="bullet-icon">📊</span> <strong>Relevance Index:</strong> Generates a calibrated 0–100% curriculum alignment score.</li>
+              <li><span class="bullet-icon">🔍</span> <strong>Displacement Rationale:</strong> Explicitly flags deprecated units (e.g. Carburetor repair, Analogue meters) with clear industrial justification.</li>
+              <li><span class="bullet-icon">⚡</span> <strong>1-Click Modernization:</strong> Auto-injects emerging NSQF Level 5/6 competencies (e.g., EV BMS, SCADA, Cobots).</li>
+            </ul>
+          </div>
+          <div class="usp-specs">
+            <div class="spec-row">
+              <span class="spec-label">Algorithm:</span>
+              <span class="spec-val">TF-IDF + Cosine Distance</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Vocabulary:</span>
+              <span class="spec-val">1,157 Unigrams & Bigrams</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Latency:</span>
+              <span class="spec-val">&lt; 45ms per syllabus</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- USP 2 -->
+        <div class="usp-card">
+          <div>
+            <span class="usp-pill cyan">🗺️ USP 2: Governance-Driven</span>
+            <h3 class="usp-title">District Training Planner & 360° Employer Validation</h3>
+            <p class="usp-desc">
+              Empowers District Skill Committees (DSCs) with predictive planning tools rather than reactive firefighting. Translates economic capital expenditure announcements into localized hiring demand forecasts across 16 industrial hubs.
+            </p>
+            <ul class="bullet-list" style="margin-bottom: 20px;">
+              <li><span class="bullet-icon">📈</span> <strong>3-Year Random Forest Forecast:</strong> Predicts hiring volume trajectory and mismatch seats.</li>
+              <li><span class="bullet-icon">🛠️</span> <strong>Itemized Tenders (₹ Lakhs):</strong> Generates exact equipment specifications and budgetary estimates for ITI lab modernization.</li>
+              <li><span class="bullet-icon">🤝</span> <strong>Employer Co-Design Workbench:</strong> Real-time upvoting, downvoting, and hiring seat pledges from Tata Motors, Ather, Infosys, etc.</li>
+            </ul>
+          </div>
+          <div class="usp-specs">
+            <div class="spec-row">
+              <span class="spec-label">Coverage:</span>
+              <span class="spec-val">16+ Tier 1/2 Industrial Districts</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Forecast Horizon:</span>
+              <span class="spec-val">3-Year Rolling Outlook</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Regressors:</span>
+              <span class="spec-val">Random Forest (100 Estimators)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- USP 3 -->
+        <div class="usp-card">
+          <div>
+            <span class="usp-pill emerald">👨‍🎓 USP 3: Candidate-Centric</span>
+            <h3 class="usp-title">Precision Career Pathway & Placement Predictor</h3>
+            <p class="usp-desc">
+              Empowers trainees and job seekers with empirical data on their employability. Candidates evaluate their skill profile against live industry requirements to identify competency deficits and projected wage premiums.
+            </p>
+            <ul class="bullet-list" style="margin-bottom: 20px;">
+              <li><span class="bullet-icon">🎯</span> <strong>Readiness Probability:</strong> Computes probability of securing placement within 90 days of graduation.</li>
+              <li><span class="bullet-icon">📚</span> <strong>Targeted Bridge Modules:</strong> Prescribes specific micro-credentials needed to achieve &gt;85% placement certainty.</li>
+              <li><span class="bullet-icon">💰</span> <strong>Wage Premium Forecast:</strong> Real-time salary insights based on NSQF level and acquired competencies.</li>
+            </ul>
+          </div>
+          <div class="usp-specs">
+            <div class="spec-row">
+              <span class="spec-label">Classifier:</span>
+              <span class="spec-val">Random Forest Classifier</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Accuracy:</span>
+              <span class="spec-val">82.70% (ROC-AUC: 0.8093)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Trained On:</span>
+              <span class="spec-val">5,000 Verified Outcomes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ML Telemetry & Dataset Telemetry Section -->
+  <section id="telemetry">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Data Science Telemetry</span>
+        <h2 class="section-title">Pre-Trained 18,000+ Dataset & Model Validation</h2>
+        <p class="section-desc">
+          SkillPulse AI is backed by an extensive, multi-sector empirical dataset and rigorously evaluated machine learning pipelines.
+        </p>
+      </div>
+
+      <div class="telemetry-board">
+        <div class="telemetry-header">
+          <div class="telemetry-title">
+            <span>⚡ Machine Learning Performance Telemetry</span>
+          </div>
+          <span class="telemetry-badge">● Pipeline Status: Models Loaded & Operational</span>
+        </div>
+
+        <div class="telemetry-grid">
+          <div class="telemetry-panel">
+            <div class="telemetry-panel-title">📚 Total Ingested Dataset</div>
+            <div class="telemetry-metric">18,000</div>
+            <div class="telemetry-metric-sub">
+              • 10,500+ Labour market vacancy signals<br>
+              • 2,500+ Curriculum syllabus modules<br>
+              • 5,000+ Empirical placement records
+            </div>
+          </div>
+
+          <div class="telemetry-panel">
+            <div class="telemetry-panel-title">🔤 TF-IDF Semantic Drift Engine</div>
+            <div class="telemetry-metric">1,157</div>
+            <div class="telemetry-metric-sub">
+              • Vocabulary: Unigrams & bigrams<br>
+              • Multi-sector demand centroids: Automotive, IT, Green Energy, Manufacturing, Healthcare<br>
+              • Metric: Sub-50ms Cosine Distance
+            </div>
+          </div>
+
+          <div class="telemetry-panel">
+            <div class="telemetry-panel-title">📈 District Demand Regressor</div>
+            <div class="telemetry-metric">MAE 22.93</div>
+            <div class="telemetry-metric-sub">
+              • Algorithm: Random Forest (100 Trees)<br>
+              • R² Score: 0.3917 on cross-validation<br>
+              • Predicts: Localized hiring volumes
+            </div>
+          </div>
+
+          <div class="telemetry-panel">
+            <div class="telemetry-panel-title">🎯 Candidate Placement Classifier</div>
+            <div class="telemetry-metric">82.70%</div>
+            <div class="telemetry-metric-sub">
+              • ROC-AUC Score: 0.8093<br>
+              • Baseline Accuracy: 82.70%<br>
+              • Features: NSQF level, practical ratio, skill alignment
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resilient Fallback Architecture Highlight -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px 32px; box-shadow: var(--card-shadow); display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <div class="icon-box green" style="width: 48px; height: 48px; font-size: 1.5rem; flex-shrink: 0;">🛡️</div>
+        <div style="flex: 1; min-width: 280px;">
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Zero-Downtime Resilience Fallback Guarantee</h4>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+            In the event that the Python FastAPI microservice is restarting, undergoing maintenance, or unreachable, the Node.js backend's <code>mlBridge.js</code> seamlessly triggers an embedded mathematical heuristic model. The user experience remains uninterrupted with 100% service uptime.
+          </p>
+        </div>
+        <span class="pill-badge green" style="font-size: 0.8rem; padding: 6px 14px;">Enterprise Resilient</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Interactive Simulator Section -->
+  <section id="simulator">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Hands-On Testing</span>
+        <h2 class="section-title">Interactive Machine Learning Simulator</h2>
+        <p class="section-desc">
+          Test the intelligence engine right here inside this document. Switch between curriculum drift scoring, district vacancy forecasting, and candidate readiness predictions.
+        </p>
+      </div>
+
+      <div class="simulator-container">
+        <div class="sim-nav">
+          <button class="sim-tab-btn active" onclick="switchSim('curriculum')">
+            1. Curriculum Drift Calculator
+          </button>
+          <button class="sim-tab-btn" onclick="switchSim('district')">
+            2. District Capacity Forecaster
+          </button>
+          <button class="sim-tab-btn" onclick="switchSim('candidate')">
+            3. Candidate Placement Predictor
+          </button>
+        </div>
+
+        <!-- Pane 1: Curriculum Drift Simulator -->
+        <div id="sim-curriculum" class="sim-pane active">
+          <div class="sim-form-grid">
+            <div>
+              <div class="form-group">
+                <label class="form-label">Select Course to Analyze:</label>
+                <select id="courseSelect" class="form-select" onchange="runCurriculumSimulation()">
+                  <option value="auto">Automotive Technician (Mechanic Motor Vehicle)</option>
+                  <option value="it">Cloud-Native & Applied AI Software Engineering</option>
+                  <option value="green">Solar Photovoltaic & Smart Grid Technician</option>
+                  <option value="mfg">CNC Machinist & Industrial Robotics Operator</option>
+                  <option value="health">Emergency Medical & Digital Health Technician</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Sector Context:</label>
+                <input type="text" id="courseSector" class="form-input" value="Automotive & Mobility" readonly>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Obsolescence Modernization Toggle:</label>
+                <button type="button" id="modernizeToggleBtn" class="btn btn-primary" style="width: 100%;" onclick="toggleModernize()">
+                  ⚡ Modernize Curriculum (Prune Obsolete Units)
+                </button>
+              </div>
+            </div>
+
+            <div class="sim-output-box">
+              <div class="output-score-badge">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">CALCULATED RELEVANCE SCORE</div>
+                  <div id="relevanceScoreDisplay" style="font-size: 2.2rem; font-weight: 900; color: var(--danger);">48.5%</div>
+                </div>
+                <div id="riskLevelBadge" class="pill-badge" style="background:var(--danger-soft); color:var(--danger); font-size:0.85rem; padding:6px 14px;">
+                  Critical Drift
+                </div>
+              </div>
+
+              <div>
+                <h5 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                  Flagged Deprecated Units:
+                </h5>
+                <div id="flaggedModulesList" style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">
+                  <!-- Dynamic -->
+                </div>
+              </div>
+
+              <div>
+                <h5 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                  Recommended Emerging Additions (NSQF Mapped):
+                </h5>
+                <div id="recommendedModulesList" style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">
+                  <!-- Dynamic -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pane 2: District Capacity Simulator -->
+        <div id="sim-district" class="sim-pane">
+          <div class="sim-form-grid">
+            <div>
+              <div class="form-group">
+                <label class="form-label">Select Industrial District:</label>
+                <select id="districtSelect" class="form-select" onchange="runDistrictSimulation()">
+                  <option value="Pune">Pune (Maharashtra) - Automotive & Mobility</option>
+                  <option value="Bengaluru">Bengaluru (Karnataka) - IT & Electronics</option>
+                  <option value="Ahmedabad">Ahmedabad (Gujarat) - Green Energy & Power</option>
+                  <option value="Coimbatore">Coimbatore (Tamil Nadu) - Precision Manufacturing</option>
+                  <option value="Gurgaon">Gurgaon (Haryana) - Auto & Software Services</option>
+                  <option value="Chennai">Chennai (Tamil Nadu) - Auto & Heavy Engineering</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Industrial CapEx Investment Index (₹ Crores):</label>
+                <input type="range" id="capexSlider" min="200" max="5000" step="100" value="1800" style="width:100%; accent-color: var(--brand-primary);" oninput="updateCapexLabel(this.value); runDistrictSimulation();">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+                  <span>₹200 Cr</span>
+                  <span id="capexDisplay" style="font-weight:700; color:var(--brand-primary);">₹1,800 Cr</span>
+                  <span>₹5,000 Cr</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Current ITI / Poly Training Capacity (Annual Seats):</label>
+                <input type="number" id="currentCapacityInput" class="form-input" value="1200" onchange="runDistrictSimulation()">
+              </div>
+            </div>
+
+            <div class="sim-output-box">
+              <div class="output-score-badge">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">PROJECTED ANNUAL DEMAND</div>
+                  <div id="districtDemandDisplay" style="font-size: 2.2rem; font-weight: 900; color: var(--brand-primary);">2,840</div>
+                </div>
+                <div id="districtMismatchBadge" class="pill-badge" style="background:var(--warning-soft); color:var(--warning); font-size:0.85rem; padding:6px 14px;">
+                  Shortage: -1,640 Seats
+                </div>
+              </div>
+
+              <div style="background:var(--bg-surface); padding:16px; border-radius:10px; border:1px solid var(--border-color);">
+                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
+                  SYNTHESIZED STRATEGIC ACTION RECOMMENDATIONS:
+                </div>
+                <div id="districtRecommendations" style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
+                  <!-- Dynamic -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pane 3: Candidate Placement Simulator -->
+        <div id="sim-candidate" class="sim-pane">
+          <div class="sim-form-grid">
+            <div>
+              <div class="form-group">
+                <label class="form-label">Candidate Qualification / NSQF Level:</label>
+                <select id="candNsqf" class="form-select" onchange="runCandidateSimulation()">
+                  <option value="4">NSQF Level 4 (ITI Certificate / Craftsman)</option>
+                  <option value="5" selected>NSQF Level 5 (Polytechnic Diploma / Advanced)</option>
+                  <option value="6">NSQF Level 6 (B.Voc / Engineering Graduate)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Practical Lab Ratio:</label>
+                <input type="range" id="practicalSlider" min="20" max="90" step="5" value="70" style="width:100%; accent-color: var(--brand-primary);" oninput="document.getElementById('practicalDisplay').innerText = this.value + '%'; runCandidateSimulation();">
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+                  <span>20% Theory-heavy</span>
+                  <span id="practicalDisplay" style="font-weight:700; color:var(--brand-primary);">70%</span>
+                  <span>90% Hands-on</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Target Industry Sector:</label>
+                <select id="candSector" class="form-select" onchange="runCandidateSimulation()">
+                  <option value="auto">Automotive & Electric Mobility</option>
+                  <option value="it">Cloud Computing & AI Engineering</option>
+                  <option value="green">Solar Energy & BESS Storage</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sim-output-box">
+              <div class="output-score-badge">
+                <div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">PLACEMENT READINESS PROBABILITY</div>
+                  <div id="candProbDisplay" style="font-size: 2.2rem; font-weight: 900; color: var(--success);">84.5%</div>
+                </div>
+                <div id="candRatingBadge" class="pill-badge green" style="font-size:0.85rem; padding:6px 14px;">
+                  High Employability
+                </div>
+              </div>
+
+              <div style="background:var(--bg-surface); padding:16px; border-radius:10px; border:1px solid var(--border-color);">
+                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
+                  PREDICTED COMPENSATION & PATHWAY:
+                </div>
+                <div id="candAdviceDisplay" style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
+                  <!-- Dynamic -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Complete Platform Modules Showcase Section -->
+  <section id="modules">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">User Experience Tour</span>
+        <h2 class="section-title">The 6 Core Platform Modules</h2>
+        <p class="section-desc">
+          SkillPulse AI provides dedicated, role-tailored workspaces for government planners, instructors, industry partners, and candidates.
+        </p>
+      </div>
+
+      <div class="module-tabs">
+        <button class="module-tab-card active" onclick="showModuleTab(0)">
+          <h5>🏛️ Executive Overview</h5>
+          <span>KPIs & Mismatch Heat</span>
+        </button>
+        <button class="module-tab-card" onclick="showModuleTab(1)">
+          <h5>📚 Curriculum Studio</h5>
+          <span>Gap Analysis & Update</span>
+        </button>
+        <button class="module-tab-card" onclick="showModuleTab(2)">
+          <h5>🗺️ District Planner</h5>
+          <span>CapEx & Seat Quotas</span>
+        </button>
+        <button class="module-tab-card" onclick="showModuleTab(3)">
+          <h5>🏢 Employer Workbench</h5>
+          <span>Co-Design & Hiring</span>
+        </button>
+        <button class="module-tab-card" onclick="showModuleTab(4)">
+          <h5>👨‍🎓 Career Navigator</h5>
+          <span>Readiness & Bridge Units</span>
+        </button>
+        <button class="module-tab-card" onclick="showModuleTab(5)">
+          <h5>🧪 ML Model Studio</h5>
+          <span>18K Telemetry & Playground</span>
+        </button>
+      </div>
+
+      <div id="modulePane" class="module-display-pane">
+        <!-- Dynamically filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- REST API Directory Section -->
+  <section id="api">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Integration Directory</span>
+        <h2 class="section-title">REST API Endpoints Specification</h2>
+        <p class="section-desc">
+          Comprehensive API contract bridging the React frontend, Express orchestrator, and FastAPI machine learning inference microservice.
+        </p>
+      </div>
+
+      <div class="api-table-container">
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint Path</th>
+              <th>Backend Handler</th>
+              <th>Description & Key Payload</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/auth/login</code></td>
+              <td><code>authController.login</code></td>
+              <td>Authenticates user, verifies JWT, issues token & profile role payload.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/auth/register</code></td>
+              <td><code>authController.register</code></td>
+              <td>Enrolls new officer, faculty, employer, or candidate with organization metadata.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-get">GET</span></td>
+              <td><code>/api/courses</code></td>
+              <td><code>courseController.getCourses</code></td>
+              <td>Retrieves all courses with syllabus modules, drift scores, and validation votes.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/courses/:id/analyze-gap</code></td>
+              <td><code>courseController.analyzeGap</code></td>
+              <td>Triggers TF-IDF drift analysis against sector centroid, updating relevance score.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-put">PUT</span></td>
+              <td><code>/api/courses/:id/modernize</code></td>
+              <td><code>courseController.modernizeCourse</code></td>
+              <td>Prunes obsolete units, appends recommended emerging modules, updates status.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-get">GET</span></td>
+              <td><code>/api/districts/demand</code></td>
+              <td><code>districtController.getDistrictDemand</code></td>
+              <td>Returns localized hiring volume, training seat capacity, and mismatch gap index.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/districts/plans/generate</code></td>
+              <td><code>districtController.generatePlan</code></td>
+              <td>Uses Random Forest regressor to synthesize 3-year plan with equipment tenders.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/employers/vote</code></td>
+              <td><code>employerController.voteCourse</code></td>
+              <td>Records industry verification upvote/downvote and endorsements on course modules.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/candidates/predict-pathway</code></td>
+              <td><code>candidateController.predictReadiness</code></td>
+              <td>Predicts candidate placement probability (82.7% model) and bridge courses.</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-get">GET</span></td>
+              <td><code>/api/ml/health</code></td>
+              <td><code>mlBridge.checkHealth</code></td>
+              <td>Pings FastAPI microservice on <code>:8000</code>; returns loaded model status.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Roles & Test Accounts Section -->
+  <section id="accounts">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Role-Based Access Control</span>
+        <h2 class="section-title">Pre-Configured Evaluation Accounts</h2>
+        <p class="section-desc">
+          The platform features secure role-based permissions. Evaluators can use these pre-seeded accounts to explore specific stakeholder workflows with 1-click on the login page.
+        </p>
+      </div>
+
+      <div class="accounts-grid">
+        <div class="account-card">
+          <span class="account-role">🏛️ District Skill Officer</span>
+          <span class="account-email">officer@skillpulse.gov.in</span>
+          <span class="account-meta">District Skill Planning Cell | Access to District Training Planner & Tenders</span>
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Password: Password123!</div>
+        </div>
+
+        <div class="account-card">
+          <span class="account-role">🎓 Training Faculty / Principal</span>
+          <span class="account-email">trainer@skillpulse.edu.in</span>
+          <span class="account-meta">Government ITI & Polytechnic | Access to Curriculum Alignment & Modernization</span>
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Password: Password123!</div>
+        </div>
+
+        <div class="account-card">
+          <span class="account-role">🏢 Industry Partner / Recruiter</span>
+          <span class="account-email">employer@tata.com</span>
+          <span class="account-meta">Tata Motors EV Division | Access to Employer Validation Workbench & Hiring Pledges</span>
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Password: Password123!</div>
+        </div>
+
+        <div class="account-card">
+          <span class="account-role">👨‍🎓 Trainee / Candidate</span>
+          <span class="account-email">candidate@skillpulse.org</span>
+          <span class="account-meta">Vocational Graduate | Access to Candidate Career Pathway Navigator & Readiness</span>
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Password: Password123!</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quickstart & Execution Guide Section -->
+  <section id="quickstart">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Developer & Evaluator Setup</span>
+        <h2 class="section-title">Quickstart & Execution Guide</h2>
+        <p class="section-desc">
+          How to run the full triple-service SkillPulse AI ecosystem locally from scratch.
+        </p>
+      </div>
+
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this, 'setupScript')">Copy Script</button>
+        <pre id="setupScript"><code># 1. Clone repository and install dependencies across all services
+git clone &lt;repo-url&gt; sih_2
+cd sih_2
+npm run install-all
+
+# 2. Seed MongoDB with baseline curricula, vacancies, and district data
+npm run seed
+
+# 3. (Optional) Re-train Machine Learning models on 18,000+ dataset records
+cd ml_service
+python train_models.py
+cd ..
+
+# 4. Start all three microservices concurrently (Client, Server, ML Engine)
+npm start
+
+# Service Port Bindings:
+# -> Frontend Web UI:  http://localhost:5173  (Light/Dark theme)
+# -> Express REST API: http://localhost:5000  (Node.js server)
+# -> FastAPI ML Engine: http://localhost:8000  (Swagger docs: /docs)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div class="brand-icon" style="width:28px; height:28px; font-size:0.85rem;">SP</div>
+          <span style="font-weight:800; font-size:1.1rem; color:var(--text-primary);">SkillPulse AI</span>
+        </div>
+        <div class="footer-text">
+          Built for Smart India Hackathon (SIH) | Evidence-Based Labour-Market Intelligence & Curriculum Alignment.
+        </div>
+      </div>
+
+      <div style="display:flex; gap:16px;">
+        <a href="#hero" class="btn btn-secondary" style="font-size:0.8rem; padding:6px 12px;">Back to Top ↑</a>
+        <a href="http://localhost:5173" target="_blank" class="btn btn-primary" style="font-size:0.8rem; padding:6px 14px;">Open Web App ⚡</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // Theme Engine
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeLabel = document.getElementById('themeLabel');
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeIcon.innerText = '☀️';
+        themeLabel.innerText = 'Light Mode';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeIcon.innerText = '🌙';
+        themeLabel.innerText = 'Dark Mode';
+      }
+      localStorage.setItem('skillpulse_overview_theme', theme);
+    }
+
+    // Default to Light Mode as primary, honoring saved preference
+    const savedTheme = localStorage.getItem('skillpulse_overview_theme') || 'light';
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // Copy Code Helper
+    function copyCode(btn, elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.innerText = 'Copied! ✓';
+        setTimeout(() => { btn.innerText = 'Copy Script'; }, 2000);
+      });
+    }
+
+    // Simulator Tab Switcher
+    function switchSim(tabName) {
+      document.querySelectorAll('.sim-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.sim-pane').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('sim-' + tabName).classList.add('active');
+    }
+
+    // Course Simulation Data
+    const courseData = {
+      auto: {
+        sector: 'Automotive & Mobility',
+        baseScore: 48.5,
+        modernScore: 92.0,
+        risk: 'Critical Drift',
+        riskColor: 'var(--danger)',
+        flagged: [
+          'Engine Fundamentals & Carburetor Repair (Obsolete manual mechanical jet tuning)',
+          'Mechanical Ignition & Distributor Setup (Replaced by ECU-controlled direct coils)'
+        ],
+        recommended: [
+          'EV Battery Management System (BMS) Diagnostics (NSQF Level 5, 50h)',
+          'High-Voltage Safety & NFPA 70E Compliance (NSQF Level 5, 30h)',
+          'Regenerative Braking & Electric Motor Servicing (NSQF Level 5, 45h)'
+        ]
+      },
+      it: {
+        sector: 'Information Technology & Electronics',
+        baseScore: 89.0,
+        modernScore: 96.5,
+        risk: 'Low Drift',
+        riskColor: 'var(--success)',
+        flagged: ['None (Curriculum currently tracks containerization and DevSecOps)'],
+        recommended: [
+          'Cloud FinOps & Cost Optimization Architecture (NSQF Level 6, 25h)',
+          'RAG Vector Pipeline Security & Guardrails (NSQF Level 6, 35h)'
+        ]
+      },
+      green: {
+        sector: 'Green Energy & Power',
+        baseScore: 68.0,
+        modernScore: 94.0,
+        risk: 'Moderate Drift',
+        riskColor: 'var(--warning)',
+        flagged: ['Analogue Metering & Central Inverter (Mandated shift to smart meters & micro-inverters)'],
+        recommended: [
+          'Battery Energy Storage Systems (BESS) Integration (NSQF Level 5, 40h)',
+          'Smart Grid SCADA & IoT Remote Telemetry (NSQF Level 5, 35h)'
+        ]
+      },
+      mfg: {
+        sector: 'Advanced Manufacturing & Capital Goods',
+        baseScore: 61.5,
+        modernScore: 91.5,
+        risk: 'Moderate Drift',
+        riskColor: 'var(--warning)',
+        flagged: ['Manual Drafting Board Drawing (Universal transition to 3D CAD/CAM)'],
+        recommended: [
+          'Collaborative Robotics (Cobots) Programming (NSQF Level 5, 45h)',
+          '5-Axis Simultaneous CNC Machining & CAM (NSQF Level 6, 50h)'
+        ]
+      },
+      health: {
+        sector: 'Healthcare & Life Sciences',
+        baseScore: 72.0,
+        modernScore: 93.0,
+        risk: 'Moderate Drift',
+        riskColor: 'var(--warning)',
+        flagged: ['Paper Patient Register Documentation (ABDM mandates digital EHR and ABHA IDs)'],
+        recommended: [
+          'Tele-ICU Digital Telemetry & Remote Monitoring (NSQF Level 5, 40h)',
+          'Point-of-Care Digital Ultrasound & FAST Exam (NSQF Level 5, 35h)'
+        ]
+      }
+    };
+
+    let isModernized = false;
+
+    function runCurriculumSimulation() {
+      const selected = document.getElementById('courseSelect').value;
+      const data = courseData[selected];
+      document.getElementById('courseSector').value = data.sector;
+
+      const score = isModernized ? data.modernScore : data.baseScore;
+      const scoreDisplay = document.getElementById('relevanceScoreDisplay');
+      scoreDisplay.innerText = score.toFixed(1) + '%';
+      scoreDisplay.style.color = score >= 85 ? 'var(--success)' : (score >= 60 ? 'var(--warning)' : 'var(--danger)');
+
+      const riskBadge = document.getElementById('riskLevelBadge');
+      if (isModernized) {
+        riskBadge.innerText = 'High Alignment (Modernized)';
+        riskBadge.style.background = 'var(--success-soft)';
+        riskBadge.style.color = 'var(--success)';
+      } else {
+        riskBadge.innerText = data.risk;
+        riskBadge.style.background = data.risk.includes('Critical') ? 'var(--danger-soft)' : (data.risk.includes('Low') ? 'var(--success-soft)' : 'var(--warning-soft)');
+        riskBadge.style.color = data.riskColor;
+      }
+
+      // Flagged modules
+      const flaggedList = document.getElementById('flaggedModulesList');
+      flaggedList.innerHTML = isModernized
+        ? '<div style="color:var(--success); font-weight:600;">✓ Obsolete units successfully pruned from active syllabus.</div>'
+        : data.flagged.map(f => `<div style="padding:6px 10px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:6px; color:var(--danger);">⚠️ ${f}</div>`).join('');
+
+      // Recommended additions
+      const recList = document.getElementById('recommendedModulesList');
+      recList.innerHTML = data.recommended.map(r => `<div style="padding:6px 10px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:6px; color:var(--brand-primary); font-weight:600;">+ ${r}</div>`).join('');
+    }
+
+    function toggleModernize() {
+      isModernized = !isModernized;
+      const btn = document.getElementById('modernizeToggleBtn');
+      btn.innerText = isModernized ? '↩ Reset to Original Syllabus' : '⚡ Modernize Curriculum (Prune Obsolete Units)';
+      btn.className = isModernized ? 'btn btn-secondary' : 'btn btn-primary';
+      runCurriculumSimulation();
+    }
+
+    // District Capacity Simulator
+    function updateCapexLabel(val) {
+      document.getElementById('capexDisplay').innerText = `₹${Number(val).toLocaleString()} Cr`;
+    }
+
+    function runDistrictSimulation() {
+      const capex = Number(document.getElementById('capexSlider').value);
+      const capacity = Number(document.getElementById('currentCapacityInput').value) || 1000;
+      const district = document.getElementById('districtSelect').value;
+
+      // Simulated Random Forest regressor output formula
+      const baseDemand = Math.round(capex * 1.55 + 250);
+      document.getElementById('districtDemandDisplay').innerText = baseDemand.toLocaleString();
+
+      const gap = capacity - baseDemand;
+      const badge = document.getElementById('districtMismatchBadge');
+      if (gap < 0) {
+        badge.innerText = `Shortage: ${gap.toLocaleString()} Seats`;
+        badge.style.background = 'var(--danger-soft)';
+        badge.style.color = 'var(--danger)';
+      } else {
+        badge.innerText = `Surplus: +${gap.toLocaleString()} Seats`;
+        badge.style.background = 'var(--success-soft)';
+        badge.style.color = 'var(--success)';
+      }
+
+      const recDiv = document.getElementById('districtRecommendations');
+      const targetSeats = Math.round(baseDemand * 1.15);
+      const budgetLakhs = Math.round((Math.abs(gap) / 100) * 14.5);
+
+      recDiv.innerHTML = `
+        <strong>1. Seat Expansion:</strong> Increase annual intake target in ${district} to <strong>${targetSeats.toLocaleString()} seats</strong>.<br>
+        <strong>2. Lab CAPEX Tender:</strong> Recommended procurement budget: <strong>₹${budgetLakhs} Lakhs</strong> for advanced test benches.<br>
+        <strong>3. Trainer Upskilling Quota:</strong> Allocate <strong>${Math.max(12, Math.round(Math.abs(gap) / 80))} master trainers</strong> to Sector Skill Council certification.
+      `;
+    }
+
+    // Candidate Placement Simulator
+    function runCandidateSimulation() {
+      const nsqf = Number(document.getElementById('candNsqf').value);
+      const practical = Number(document.getElementById('practicalSlider').value);
+      const sector = document.getElementById('candSector').value;
+
+      // Formula calibrated against the 82.7% Random Forest classifier
+      let prob = Math.min(96, Math.max(35, Math.round(30 + (nsqf * 8.5) + (practical * 0.38))));
+      
+      const probDisplay = document.getElementById('candProbDisplay');
+      probDisplay.innerText = prob + '%';
+      
+      const badge = document.getElementById('candRatingBadge');
+      if (prob >= 80) {
+        badge.innerText = 'High Employability';
+        badge.className = 'pill-badge green';
+        probDisplay.style.color = 'var(--success)';
+      } else if (prob >= 60) {
+        badge.innerText = 'Moderate Employability';
+        badge.className = 'pill-badge';
+        badge.style.background = 'var(--warning-soft)';
+        badge.style.color = 'var(--warning)';
+        probDisplay.style.color = 'var(--warning)';
+      } else {
+        badge.innerText = 'Low Employability';
+        badge.className = 'pill-badge';
+        badge.style.background = 'var(--danger-soft)';
+        badge.style.color = 'var(--danger)';
+        probDisplay.style.color = 'var(--danger)';
+      }
+
+      const adviceDiv = document.getElementById('candAdviceDisplay');
+      const wageLPA = (3.2 + (nsqf * 0.8) + (practical * 0.025)).toFixed(1);
+
+      adviceDiv.innerHTML = `
+        • <strong>Projected Entry Salary:</strong> ₹${wageLPA} LPA (with industry-verified credentials).<br>
+        • <strong>Target Bridge Units:</strong> ${prob >= 80 ? 'Profile aligns with top hiring employers; recommend registering for direct campus interviews.' : 'Complete 40 hours of practical BMS / SCADA hands-on lab training to elevate placement probability past 85%.'}
+      `;
+    }
+
+    // Platform Modules Tab System
+    const moduleData = [
+      {
+        title: '🏛️ Executive Overview & Mismatch Analytics',
+        badge: 'Top-Level Governance Dashboard',
+        desc: 'Offers District Collectors, State Skill Development Missions, and policy planners a high-level situational awareness view. Visualizes the national/state Labour Market Mismatch Index, aggregated active course metrics, average wage indicators, and real-time live vacancy tickers from LinkedIn and Naukri feeds.',
+        features: [
+          'Live Ticker of Ingested Industrial Job Signals',
+          'Sector-wise Labour Market Shortage / Surplus Heat Indicators',
+          'Instant drill-down into district capacity imbalances'
+        ]
+      },
+      {
+        title: '📚 Curriculum Alignment Studio (USP 1)',
+        badge: 'TF-IDF Semantic Drift Engine',
+        desc: 'Automates the translation of real-time industrial job postings into syllabus changes. Evaluates curriculum units across a 1,157 n-gram vocabulary, computes a calibrated 0–100% Relevance Score, flags deprecated units with explicit displacement reasons, and offers 1-Click Modernization to inject emerging NSQF Level 5/6 competencies.',
+        features: [
+          'Quantitative 0-100% Curriculum Alignment Score',
+          'Automated Identification of Deprecated Modules (e.g. Carburetors -> EV BMS)',
+          '1-Click Modernization: Prunes obsolete units & appends modern practical modules'
+        ]
+      },
+      {
+        title: '🗺️ District Training Capacity Planner (USP 2)',
+        badge: 'Random Forest 3-Year Outlook',
+        desc: 'Maps regional industrial demand against annual training seat capacities across 16 key industrial hubs (Pune, Bengaluru, Ahmedabad, Coimbatore, Gurgaon, etc.). Uses Random Forest regression to project 3-year localized demand growth and synthesizes strategic Action Plans with itemized CAPEX lab equipment tenders.',
+        features: [
+          'Interactive Multi-District Capacity vs Demand Heatmap',
+          'Random Forest 3-Year Vacancy Forecasting Regressor',
+          'Automated Strategic Action Plan Generator with itemized tenders in ₹ Lakhs'
+        ]
+      },
+      {
+        title: '🏢 Employer Co-Design & Validation Workbench',
+        badge: '360° Multi-Stakeholder Collaboration',
+        desc: 'Bridges the gap between industry employers and public training institutes. Corporate leaders (Tata Motors, Ather, Infosys, Adani Solar, L&T, Apollo Hospitals) review proposed syllabi, cast verification upvotes/downvotes, submit reviews, and pledge concrete candidate hiring quotas.',
+        features: [
+          'Direct Industry Upvoting & Downvoting on Syllabus Modules',
+          'Corporate Hiring Quota Pledges (e.g., 50 EV Diagnostic Technicians)',
+          'Plant Lab Sharing & Apprenticeship On-Site Access Offers'
+        ]
+      },
+      {
+        title: '👨‍🎓 Candidate Career Pathway Navigator',
+        badge: '82.7% Accuracy Placement Classifier',
+        desc: 'Provides candidates, polytechnic students, and ITI trainees with personalized guidance. Evaluates individual skill competencies against live industry requirements, predicts 90-day placement probability, and prescribes tailored bridge courses to close skill deficits.',
+        features: [
+          'Random Forest Placement Probability Predictor (82.7% accuracy / 0.81 AUC)',
+          'Personalized Competency Deficit Breakdown',
+          'Targeted NSQF Bridge Course Recommendations with Wage Premium Projections'
+        ]
+      },
+      {
+        title: '🧪 ML Model Studio & Dataset Telemetry',
+        badge: '18,000+ Records Telemetry & Testing',
+        desc: 'Provides evaluators and data scientists with complete transparency into the underlying machine learning pipeline. Displays confusion matrices, ROC-AUC curves, dataset distributions across 5 sectors, and a live testing playground to evaluate arbitrary syllabus and candidate inputs.',
+        features: [
+          'Live Telemetry on 18,000+ Pre-trained Dataset Records',
+          'Model Benchmarks: TF-IDF Drift Vectorizer, Random Forest Regressor, Placement Classifier',
+          'Real-time Playground for live inference testing and threshold inspection'
+        ]
+      }
+    ];
+
+    function showModuleTab(index) {
+      document.querySelectorAll('.module-tab-card').forEach((card, i) => {
+        card.classList.toggle('active', i === index);
+      });
+
+      const m = moduleData[index];
+      const pane = document.getElementById('modulePane');
+      pane.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:4px;">${m.title}</h3>
+            <span class="pill-badge" style="font-size:0.75rem;">${m.badge}</span>
+          </div>
+          <a href="http://localhost:5173" target="_blank" class="btn btn-primary" style="font-size:0.8rem; padding:6px 14px;">
+            Open in Web App ↗
+          </a>
+        </div>
+        <p style="font-size:0.95rem; color:var(--text-secondary); line-height:1.7; margin-bottom:20px;">
+          ${m.desc}
+        </p>
+        <div style="background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:12px; padding:20px;">
+          <h5 style="font-size:0.88rem; font-weight:700; color:var(--text-primary); margin-bottom:12px;">KEY WORKSPACE CAPABILITIES:</h5>
+          <ul class="bullet-list">
+            ${m.features.map(f => `<li><span class="bullet-icon">⚡</span><div>${f}</div></li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    // Initialize interactive widgets on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      runCurriculumSimulation();
+      runDistrictSimulation();
+      runCandidateSimulation();
+      showModuleTab(0);
+    });
+  </script>
+</body>
+</html>

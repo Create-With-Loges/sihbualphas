@@ -1,0 +1,28 @@
+{
+  "dataset": {
+    "labour_market_signals": 10500,
+    "curriculum_drift_modules": 2500,
+    "placement_outcomes": 5000,
+    "total": 18000
+  },
+  "demand_forecast_regressor": {
+    "r2_score": 0.3917,
+    "mae": 22.93,
+    "rmse": 29.59,
+    "cv_mean_r2": 0.3954,
+    "cv_std_r2": 0.0127
+  },
+  "placement_classifier": {
+    "accuracy_pct": 82.7,
+    "precision_pct": 88.27,
+    "recall_pct": 89.52,
+    "f1_pct": 88.89,
+    "roc_auc": 0.8093,
+    "cv_mean_accuracy_pct": 82.22,
+    "cv_mean_auc": 0.796
+  },
+  "drift_engine": {
+    "accuracy_pct": 71.24,
+    "modules_evaluated": 2500
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "dataset_records_count": 10500,
+  "curriculum_records_count": 2500,
+  "placement_records_count": 5000,
+  "total_training_records": 18000,
+  "vocabulary_size": 1157,
+  "demand_forecast_r2_score": 0.3917,
+  "demand_forecast_mae": 22.93,
+  "placement_classifier_accuracy_pct": 82.7,
+  "placement_classifier_roc_auc": 0.8093,
+  "training_timestamp": "2026-09-29T11:22:03.433829"
+}
